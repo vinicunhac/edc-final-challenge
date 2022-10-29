@@ -23,7 +23,7 @@ def trigger_crawler_enem_microdados_2020_func():
 
 
 with DAG(
-    'desafio_final_btc_edsup_2019',
+    'final_challenge_enem',
     default_args={
         'owner': 'Vinicius',
         'depends_on_past': False,
