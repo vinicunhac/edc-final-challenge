@@ -1,7 +1,7 @@
 apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
-  name: spark-enem-sexo-{{ macros.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") }}
+  name: microdados-enem2020-{{ macros.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") }}
   namespace: airflow
 spec:
   volumes:
@@ -19,7 +19,7 @@ spec:
   mode: cluster
   image: "docker.io/neylsoncrepalde/spark-operator:v3.0.0-aws"
   imagePullPolicy: Always
-  mainApplicationFile: s3a://emr-code-539445819060/ney/pyspark/enem_agrega_sexo.py
+  mainApplicationFile: s3a://bucket-final-challenge/scripts/enem_converte_parquet.py
   sparkVersion: "3.0.0"
   restartPolicy:
     type: Never

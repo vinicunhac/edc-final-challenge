@@ -1,4 +1,4 @@
-# edc_mod4_exercise_igti
+# edc_final_challenge
 
 Project started in September 07, 2021.
 

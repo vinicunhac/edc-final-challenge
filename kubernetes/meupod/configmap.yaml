@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ambiente
-data:
-  minha_var: "meu_valor_esperto"

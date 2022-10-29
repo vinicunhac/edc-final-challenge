@@ -233,7 +233,7 @@ env:
   - name: AIRFLOW__LOGGING__REMOTE_LOGGING
     value: 'True'
   - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
-    value: 's3://airflow-logs-539445819060/logs/'
+    value: 's3://bucket-final-challenge/airlfow-logs/logs/'
   - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
     value: 'my_aws'
 # - name: ""
@@ -875,10 +875,10 @@ webserver:
   defaultUser:
     enabled: true
     role: Admin
-    username: neylsoncrepalde
-    email: neylson.crepalde@a3data.com.br
-    firstName: Neylson
-    lastName: Crepalde
+    username: vinicunhac
+    email: cvinciuscunha@gmail.com
+    firstName: Vinicius
+    lastName: Cunha
     password: admin
 
   # Launch additional containers into webserver.
@@ -1555,8 +1555,8 @@ dags:
     # ssh examples ssh://git@github.com/apache/airflow.git
     # git@github.com:apache/airflow.git
     # https example: https://github.com/apache/airflow.git
-    repo: https://github.com/neylsoncrepalde/edc_mod4_exercise_igti.git
-    branch: dev
+    repo: https://github.com/vinicunhac/edc-final-challenge.git
+    branch: master
     rev: HEAD
     depth: 1
     # the number of consecutive failures allowed before aborting

@@ -10,38 +10,33 @@ import boto3
 
 aws_access_key_id = Variable.get('aws_access_key_id')
 aws_secret_access_key = Variable.get('aws_secret_access_key')
-glue = boto3.client('glue', region_name='us-east-1',
+glue = boto3.client('glue', region_name='us-east-2',
                     aws_access_key_id=aws_access_key_id, 
                     aws_secret_access_key=aws_secret_access_key)
 
 from airflow.utils.dates import days_ago
 
 
-def trigger_crawler_edsup2019_aluno_func():
-    glue.start_crawler(Name='edsup2019_crawler_aluno')
+def trigger_crawler_enem_microdados_2020_func():
+    glue.start_crawler(Name='enem_microdados_2020')
 
-def trigger_crawler_edsup2019_docente_func():
-    glue.start_crawler(Name='edsup2019_crawler_docente')
-
-def trigger_crawler_edsup2019_curso_func():
-    glue.start_crawler(Name='edsup2019_crawler_curso')
 
 
 with DAG(
     'desafio_final_btc_edsup_2019',
     default_args={
-        'owner': 'Neylson',
+        'owner': 'Vinicius',
         'depends_on_past': False,
-        'email': ['neylson.crepalde@a3data.com.br'],
+        'email': ['cviniciuscunha@gmail.com'],
         'email_on_failure': False,
         'email_on_retry': False,
         'max_active_runs': 1,
     },
-    description='Extração e processamento do Censo da Ed. Superior 2019',
+    description='Extract and Processing of data ENEM 2020',
     schedule_interval=None,
     start_date=days_ago(1),
     catchup=False,
-    tags=['spark', 'kubernetes', 'batch', 'Censo', 'edsup'],
+    tags=['spark', 'kubernetes', 'batch', 'enem2020'],
 ) as dag:
 
     # extracao = KubernetesPodOperator(
@@ -56,73 +51,32 @@ with DAG(
     #     get_logs=True,
     # )
 
-    inicio = DummyOperator(task_id='inicio')
+    start = DummyOperator(task_id='start')
 
-    converte_ALUNOS_parquet = SparkKubernetesOperator(
-        task_id='converte_ALUNOS_parquet',
+    converte_microdadosenem_parquet = SparkKubernetesOperator(
+        task_id='converte_microdadosenem_parquet',
         namespace="airflow",
-        application_file="dag_edsup2019_converte_ALUNOS_parquet.yaml",
+        application_file="dag_convert_csv_to_parquet.yaml",
         kubernetes_conn_id="kubernetes_default",
         do_xcom_push=True,
     )
 
-    converte_ALUNOS_parquet_monitor = SparkKubernetesSensor(
-        task_id='converte_ALUNOS_parquet_monitor',
+    converte_microdadosenem_parquet_monitor = SparkKubernetesSensor(
+        task_id='converte_microdadosenem_parquet_monitor',
         namespace="airflow",
-        application_name="{{ task_instance.xcom_pull(task_ids='converte_ALUNOS_parquet')['metadata']['name'] }}",
+        application_name="{{ task_instance.xcom_pull(task_ids='converte_microdadosenem_parquet')['metadata']['name'] }}",
         kubernetes_conn_id="kubernetes_default",
     )
 
 
-    converte_DOCENTE_parquet = SparkKubernetesOperator(
-        task_id='converte_DOCENTE_parquet',
-        namespace="airflow",
-        application_file="dag_edsup2019_converte_DOCENTE_parquet.yaml",
-        kubernetes_conn_id="kubernetes_default",
-        do_xcom_push=True,
-    )
 
-    converte_DOCENTE_parquet_monitor = SparkKubernetesSensor(
-        task_id='converte_DOCENTE_parquet_monitor',
-        namespace="airflow",
-        application_name="{{ task_instance.xcom_pull(task_ids='converte_DOCENTE_parquet')['metadata']['name'] }}",
-        kubernetes_conn_id="kubernetes_default",
+    trigger_crawler_microdados_enem = PythonOperator(
+        task_id='trigger_crawler_microdados_enem',
+        python_callable=trigger_crawler_enem_microdados_2020_func,
     )
 
 
-    converte_CURSO_parquet = SparkKubernetesOperator(
-        task_id='converte_CURSO_parquet',
-        namespace="airflow",
-        application_file="dag_edsup2019_converte_CURSO_parquet.yaml",
-        kubernetes_conn_id="kubernetes_default",
-        do_xcom_push=True,
-    )
 
-    converte_CURSO_parquet_monitor = SparkKubernetesSensor(
-        task_id='converte_CURSO_parquet_monitor',
-        namespace="airflow",
-        application_name="{{ task_instance.xcom_pull(task_ids='converte_CURSO_parquet')['metadata']['name'] }}",
-        kubernetes_conn_id="kubernetes_default",
-    )
+start >> [converte_microdadosenem_parquet]
+converte_microdadosenem_parquet >> converte_microdadosenem_parquet_monitor >> trigger_crawler_microdados_enem
 
-
-    trigger_crawler_edsup2019_aluno = PythonOperator(
-        task_id='trigger_crawler_edsup2019_ALUNOS',
-        python_callable=trigger_crawler_edsup2019_aluno_func,
-    )
-
-    trigger_crawler_edsup2019_docente = PythonOperator(
-        task_id='trigger_crawler_edsup2019_DOCENTE',
-        python_callable=trigger_crawler_edsup2019_docente_func,
-    )
-
-    trigger_crawler_edsup2019_curso = PythonOperator(
-        task_id='trigger_crawler_edsup2019_CURSO',
-        python_callable=trigger_crawler_edsup2019_curso_func
-    )
-
-
-inicio >> [converte_CURSO_parquet, converte_DOCENTE_parquet]
-converte_CURSO_parquet >> converte_CURSO_parquet_monitor >> trigger_crawler_edsup2019_curso
-converte_DOCENTE_parquet >> converte_DOCENTE_parquet_monitor >> trigger_crawler_edsup2019_docente
-converte_DOCENTE_parquet_monitor >> converte_ALUNOS_parquet >> converte_ALUNOS_parquet_monitor >> trigger_crawler_edsup2019_aluno
