@@ -19,7 +19,7 @@ spec:
   mode: cluster
   image: "docker.io/neylsoncrepalde/spark-operator:v3.0.0-aws"
   imagePullPolicy: Always
-  mainApplicationFile: s3a://bucket-final-challenge/scripts/enem_converte_parquet.py
+  mainApplicationFile: s3://bucket-final-challenge/scripts/enem_converte_parquet.py
   sparkVersion: "3.0.0"
   restartPolicy:
     type: Never

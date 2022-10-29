@@ -1,7 +1,6 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 
-print("cheguei aqui!")
 
 # set conf
 conf = (
@@ -31,7 +30,7 @@ if __name__ == "__main__":
         .read
         .format("csv")
         .options(header='true', inferSchema='true', delimiter=';')
-        .load("s3a://bucket-final-challenge/landing-zone/")
+        .load("s3://bucket-final-challenge/landing-zone/")
   
     )
     
