@@ -30,7 +30,7 @@ if __name__ == "__main__":
         .read
         .format("csv")
         .options(header='true', inferSchema='true', delimiter=';')
-        .load("s3://bucket-final-challenge/landing-zone/")
+        .load("s3a://bucket-final-challenge/landing-zone/")
   
     )
     
