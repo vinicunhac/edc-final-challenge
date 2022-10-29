@@ -1,6 +1,8 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 
+print("cheguei aqui!")
+
 # set conf
 conf = (
 SparkConf()
