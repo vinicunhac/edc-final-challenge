@@ -78,5 +78,5 @@ with DAG(
 
 
 start >> [converte_microdadosenem_parquet]
-converte_microdadosenem_parquet 
+converte_microdadosenem_parquet >> converte_microdadosenem_parquet_monitor >> trigger_crawler_microdados_enem
 
