@@ -11,7 +11,7 @@ spec:
   sparkConf:
     extraJavaOptions: -Dcom.amazonaws.services.s3.enableV4=true
     spark.jars.packages: "org.apache.hadoop:hadoop-aws:2.7.3,org.apache.spark:spark-avro_2.12:3.0.1"
-    spark.driver.extraJavaOptions: ["-Divy.cache.dir=/tmp -Divy.home=/tmp",-Dcom.amazonaws.services.s3.enableV4"]
+    spark.driver.extraJavaOptions: "-Divy.cache.dir=/tmp -Divy.home=/tmp ,-Dcom.amazonaws.services.s3.enableV4"
     spark.executor.extraJavaOptions: "-Dcom.amazonaws.services.s3.enableV4"
     spark.kubernetes.allocation.batch.size: "10"
   hadoopConf:
