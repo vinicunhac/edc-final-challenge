@@ -17,7 +17,7 @@
 
 
 
-![k8s](img/architecture.png)
+![k8s](img/architecture.PNG)
 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
